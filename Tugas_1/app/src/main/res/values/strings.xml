@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Tugas_1</string>
+    <string name="lang_app_menu_front">Menu</string>
+    <string name="lang_btn_mhs">Mahasiswa</string>
+    <string name="lang_btn_hitung">Hitung</string>
+    <string name="lang_hitung_title">Hitung</string>
+    <string name="lang_tip_angka1">Bilangan 1</string>
+    <string name="lang_tip_angka2">Bilangan 2</string>
+    <string name="lang_result_title_hitung">Hasil Perhitungan</string>
+    <string name="lang_tip_nim">NIM Mahasiswa</string>
+    <string name="lang_tip_nama">Nama Mahasiswa</string>
+    <string name="lang_btn_show">Tampil</string>
+    <string name="lang_result_mhs">Data Mahasiswa</string>
+</resources>
