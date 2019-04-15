@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Tugas_2</string>
+    <string name="lang_menuTitle">Main Menu</string>
+    <string name="lang_menu_sewa">Sewa</string>
+    <string name="lang_menu_lingkaran">Luas Lingkaran</string>
+    <string name="lang_sewaTitle">Penginapan</string>
+    <string name="lang_form_sewaType">Jenis Penyewaan</string>
+    <string name="lang_rb_sewa_ekonomi">Ekonomi</string>
+    <string name="lang_rb_sewa_standar">Standar</string>
+    <string name="lang_rb_sewa_premium">Premium</string>
+    <string name="lang_form_lamaSewa">Lama Sewa</string>
+    <string name="lang_tooltip_lamaSewa">Masukkan lama sewa (Dalam hari) (Ex : 1)</string>
+    <string name="lang_btn_submitSewa">Hitung</string>
+    <string name="lang_btn_reset">Ulang</string>
+    <string name="lang_result_title">Hasil Perhitungan</string>
+</resources>
