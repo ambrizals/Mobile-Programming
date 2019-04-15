@@ -13,4 +13,8 @@
     <string name="lang_btn_submitSewa">Hitung</string>
     <string name="lang_btn_reset">Ulang</string>
     <string name="lang_result_title">Hasil Perhitungan</string>
+    <string name="lang_lingkaranTitle">Luas Lingkaran</string>
+    <string name="lang_form_input_lingkaranJarijari">Jari - Jari Lingkaran :</string>
+    <string name="lang_form_input_lingkaranDiameter">Diameter Lingkaran</string>
+    <string name="lang_form_input_lingkaranLuas">Luas Lingkaran</string>
 </resources>

@@ -6,4 +6,69 @@
     android:layout_height="match_parent"
     tools:context=".LingkaranActivity">
 
+    <LinearLayout
+        android:id="@+id/body_lingkaran"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/lingkaran_act_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lang_lingkaranTitle"
+            android:textSize="24sp"
+            android:textAlignment="center"
+            android:background="#efefef"
+            android:padding="15sp"
+            android:layout_marginBottom="20sp"
+            />
+
+        <TextView
+            android:id="@+id/tv_form_alaslingkaran"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lang_form_input_lingkaranJarijari" />
+
+        <EditText
+            android:id="@+id/et_jariLingkaran"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lang_form_input_lingkaranDiameter" />
+
+        <EditText
+            android:id="@+id/et_diameterLingkaran"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lang_form_input_lingkaranLuas" />
+
+        <EditText
+            android:id="@+id/et_luasLingkaran"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number" />
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
