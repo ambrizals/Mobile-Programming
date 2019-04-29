@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".InputNilaiActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_hitung_nilai"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hitung_nilai_title"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:layout_marginBottom="36sp"/>
+
+        <TextView
+            android:id="@+id/tv_hint_hitung"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/form_nilai_hint" />
+
+        <EditText
+            android:id="@+id/et_nilai_tugas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="number"
+            android:hint="@string/form_hint_tugas" />
+
+        <EditText
+            android:id="@+id/et_nilai_uts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/form_hint_uts"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/et_nilai_uas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="@string/form_hint_uas"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/btn_hitungGrade"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_hitungSubmit"
+            android:layout_margin="24sp"/>
+
+        <TextView
+            android:id="@+id/tv_grade_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/result_hitung_title"
+            android:textAlignment="center"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:id="@+id/tv_nilai_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_value_nilai"
+            android:textSize="16sp"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:id="@+id/tv_grade_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_value_grade"
+            android:textAlignment="center"
+            android:textSize="32sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

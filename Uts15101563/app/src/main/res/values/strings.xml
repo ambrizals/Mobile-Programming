@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Uts15101563</string>
+    <string name="login">Login</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="btn_login">Masuk</string>
+    <string name="welcome_title">Selamat Datang</string>
+    <string name="aplikasi_hint">Aplikasi Perhitungan Grade Nilai</string>
+    <string name="btn_hitung_text">Hitung Grade</string>
+    <string name="hitung_nilai_title">Perhitungan Grade</string>
+    <string name="form_nilai_hint">Masukkan Nilai</string>
+    <string name="form_hint_tugas">Nilai Tugas</string>
+    <string name="form_hint_uts">Nilai UTS</string>
+    <string name="form_hint_uas">Nilai UAS</string>
+    <string name="btn_hitungSubmit">Hitung</string>
+    <string name="no_value_nilai">00</string>
+    <string name="no_value_grade">XX</string>
+    <string name="result_hitung_title">Grade Nilai</string>
+</resources>
