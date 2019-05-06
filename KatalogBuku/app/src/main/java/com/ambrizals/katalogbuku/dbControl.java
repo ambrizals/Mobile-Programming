@@ -13,7 +13,7 @@ public class dbControl extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase db){
-        String sql = "create table buku (id integer primary key autoincrement, judul_buku text null, nama_pengarang text null, tahun_terbit text null, penerbit text null";
+        String sql = "create table buku (id integer primary key autoincrement, judul_buku text null, nama_pengarang text null, tahun_terbit text null, penerbit text null)";
         Log.d("Data", "onCreate" + sql);
         db.execSQL(sql);
         sql = "INSERT INTO buku (id, judul_buku, nama_pengarang, tahun_terbit, penerbit) VALUES (1, 'Penerapan Sistem', 'Jogiyanto','2010','Andi')";

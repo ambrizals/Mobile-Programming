@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     Menu menu;
 
     void tampilData(){
-        String querySelect = "SELECT * FROM tbl_buku";
+        String querySelect = "SELECT * FROM buku";
         SQLiteDatabase conDB = koneksiDB.getReadableDatabase();
         cursor = conDB.rawQuery(querySelect, null);
         daftarBuku = new String[cursor.getCount()];
