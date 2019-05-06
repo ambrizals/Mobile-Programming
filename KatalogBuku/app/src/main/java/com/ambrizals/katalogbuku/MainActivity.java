@@ -45,8 +45,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 //        return super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.main, menu);
         this.menu = menu;
+        menu.add(0,1,0,"Tambah").setIcon(android.R.drawable.btn_plus);
+        menu.add(0,2,0, "Refresh").setIcon(android.R.drawable.ic_menu_rotate);
+        menu.add(0,3,0, "Exit").setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 
         return true;
     }
