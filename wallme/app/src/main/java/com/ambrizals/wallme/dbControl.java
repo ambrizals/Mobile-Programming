@@ -36,13 +36,21 @@ public class dbControl extends SQLiteOpenHelper {
         Log.d("Data", "onCreate" + sql_dumy_saldo);
         db.execSQL(sql_dumy_saldo);
 
-        String sql_dumy_pemasukan = "insert into pemasukan (nama_pemasukan, jumlah_pemasukan, created_at, updated_at) values ('Saldo Utama', '2000', '"+tanggalSekarang+"', '"+tanggalSekarang+"')";
+        String sql_dumy_pemasukan = "insert into pemasukan (nama_pemasukan, jumlah_pemasukan, created_at, updated_at) values ('Saldo Utama', '4000', '"+tanggalSekarang+"', '"+tanggalSekarang+"')";
         Log.d("data", "OnCreate" + sql_dumy_pemasukan);
         db.execSQL(sql_dumy_pemasukan);
 
         sql_dumy_pemasukan = "insert into pemasukan (nama_pemasukan, jumlah_pemasukan, created_at, updated_at) values ('Saldo Utama', '3000', '"+tanggalSekarang+"', '"+tanggalSekarang+"')";
         Log.d("data", "OnCreate" + sql_dumy_pemasukan);
         db.execSQL(sql_dumy_pemasukan);
+
+        String sql_dumy_pengeluaran = "insert into pengeluaran (nama_pengeluaran, jumlah_pengeluaran, created_at, updated_at) values ('Beli 1', '1000', '"+tanggalSekarang+"', '"+tanggalSekarang+"')";
+        Log.d("data", "onCreate" + sql_dumy_pengeluaran);
+        db.execSQL(sql_dumy_pengeluaran);
+
+        sql_dumy_pengeluaran = "insert into pengeluaran (nama_pengeluaran, jumlah_pengeluaran, created_at, updated_at) values ('Beli 1', '1000', '"+tanggalSekarang+"', '"+tanggalSekarang+"')";
+        Log.d("data", "onCreate" + sql_dumy_pengeluaran);
+        db.execSQL(sql_dumy_pengeluaran);
 
     }
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -55,4 +63,9 @@ public class dbControl extends SQLiteOpenHelper {
         return data;
     }
 
+    public Cursor pengeluaranList() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor data = db.rawQuery("SELECT * FROM PENGELUARAN", null);
+        return data;
+    }
 }

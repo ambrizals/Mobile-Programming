@@ -36,23 +36,25 @@
             android:textSize="26sp"
             android:textAlignment="center"/>
 
-        <android.support.design.widget.TabLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <android.support.design.widget.TabItem
-                android:id="@+id/tab_pemasukan"
+            <Button
+                android:id="@+id/btn_pemasukan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Pemasukan" />
 
-            <android.support.design.widget.TabItem
-                android:id="@+id/tab_pengeluaran"
+            <Button
+                android:id="@+id/btn_pengeluaran"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Pengeluaran" />
-
-        </android.support.design.widget.TabLayout>
+        </LinearLayout>
 
         <ListView
             android:id="@+id/lv_wallme"
