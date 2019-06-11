@@ -21,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,16 +39,18 @@ public class MainActivity extends AppCompatActivity {
     Button btn_shpmsk;
     Button btn_shplr;
     Menu menu;
+    currencyControl currencyControl;
 
     // Tampil jumlah saldo
     void tampilSaldo() {
+
         String querySaldo = "SELECT * FROM SALDO";
         SQLiteDatabase conDB = dbControl.getReadableDatabase();
         cursor = conDB.rawQuery(querySaldo, null);
         tv_saldo = (TextView)findViewById(R.id.tv_saldo);
         if (cursor.moveToFirst()) {
             String saldo = cursor.getString(1);
-            tv_saldo.setText(saldo);
+            tv_saldo.setText(currencyControl.rupiah(Double.valueOf(saldo)));
         }
     }
 
@@ -62,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
         // Start Bagian List View
         Cursor data = dbControl.pemasukanList();
         if(data.getCount() == 0) {
-            Toast.makeText(this,"Something wrong !", Toast.LENGTH_SHORT).show();
+            TextView emptyText = (TextView)findViewById(R.id.tv_empty);
+            lv_wallme.setEmptyView(emptyText);
         } else {
             // Masukkan data dari dbms ke array
             final ArrayList<Map<String, String>> listPmsk = new ArrayList<Map<String,String>>();
@@ -110,7 +115,9 @@ public class MainActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        Toast.makeText(MainActivity.this, "Check Ubah ID:" + id_pmsk, Toast.LENGTH_SHORT).show();
+                                        Intent ubahPemasukan = new Intent(MainActivity.this, ubah_pemasukan.class);
+                                        ubahPemasukan.putExtra("id_pmsk", id_pmsk);
+                                        startActivity(ubahPemasukan);
                                         break;
                                     case 1:
                                         String queryDel = "DELETE FROM pemasukan where id_pemasukan = '"+id_pmsk+"'";
@@ -143,12 +150,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void tampilTotal() {
-        Integer total;
+        String total;
+        String  cur;
         Cursor tampil = dbControl.pemasukanTotal();
         tv_total_pemasukan = (TextView)findViewById(R.id.tv_total_pemasukan);
         if(tampil.moveToFirst()) {
-            total = tampil.getInt(0);
-            tv_total_pemasukan.setText(String.valueOf(total));
+            total = tampil.getString(0);
+            cur = currencyControl.rupiah(Double.valueOf(total));
+            tv_total_pemasukan.setText(cur);
         } else {
             Toast.makeText(MainActivity.this, "Something Wrong !", Toast.LENGTH_SHORT).show();
         }
@@ -162,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
         setTitle("Wallme - Pemasukan");
 
         lv_wallme = (ListView)findViewById(R.id.lv_wallme);
+        currencyControl = new currencyControl();
         dbControl = new dbControl(this);
         tampilSaldo();
         tampilPemasukan();

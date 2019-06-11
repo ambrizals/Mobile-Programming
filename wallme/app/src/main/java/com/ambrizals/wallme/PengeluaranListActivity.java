@@ -36,6 +36,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
     Button btn_shpmsk;
     Button btn_shplr;
     Menu menu;
+    currencyControl currencyControl;
 
     // Tampil jumlah saldo
     void tampilSaldo() {
@@ -45,7 +46,8 @@ public class PengeluaranListActivity extends AppCompatActivity {
         tv_saldo = (TextView)findViewById(R.id.tv_saldo);
         if (cursor.moveToFirst()) {
             String saldo = cursor.getString(1);
-            tv_saldo.setText(saldo);
+            String cur = currencyControl.rupiah(Double.valueOf(saldo));
+            tv_saldo.setText(cur);
         }
     }
 
@@ -61,7 +63,8 @@ public class PengeluaranListActivity extends AppCompatActivity {
         // Bagian List View
         Cursor data = dbControl.pengeluaranList();
         if(data.getCount() == 0) {
-            Toast.makeText(this,"Something wrong !", Toast.LENGTH_SHORT).show();
+            TextView emptyText = (TextView)findViewById(R.id.tv_empty);
+            lv_wallme.setEmptyView(emptyText);
         } else {
             // Masukkan data dari dbms ke array
             final ArrayList<Map<String, String>> listPlr = new ArrayList<Map<String,String>>();
@@ -108,7 +111,9 @@ public class PengeluaranListActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        Toast.makeText(PengeluaranListActivity.this, "Check Ubah ID:" + id_plr, Toast.LENGTH_SHORT).show();
+                                        Intent ubahPengeluaran = new Intent(PengeluaranListActivity.this, ubah_pengeluaran.class);
+                                        ubahPengeluaran.putExtra("id_plr", id_plr);
+                                        startActivity(ubahPengeluaran);
                                         break;
                                     case 1:
                                         String queryDel = "DELETE FROM pengeluaran where id_pengeluaran = '"+id_plr+"'";
@@ -142,16 +147,20 @@ public class PengeluaranListActivity extends AppCompatActivity {
         // End Bagian List View
     }
     void tampilTotal() {
-        Integer total;
         Cursor tampil = dbControl.pengeluaranTotal();
-        tv_total_pengeluaran = (TextView)findViewById(R.id.tv_total_pengeluaran);
-        if(tampil.moveToFirst()) {
-            total = tampil.getInt(0);
-            tv_total_pengeluaran.setText(String.valueOf(total));
-        } else {
-            Toast.makeText(PengeluaranListActivity.this, "Something Wrong !", Toast.LENGTH_SHORT).show();
+        if (!(tampil.moveToFirst()) || tampil.getCount() ==0){
+            tv_total_pengeluaran = (TextView)findViewById(R.id.tv_total_pengeluaran);
+            if(tampil.moveToFirst()) {
+                String total = tampil.getString(0);
+                if (total.equals(" ")) {
+                    String cur = currencyControl.rupiah(Double.valueOf(total));
+                    tv_total_pengeluaran.setText(cur);
+                }
+            } else {
+                Toast.makeText(PengeluaranListActivity.this, "Something Wrong !", Toast.LENGTH_SHORT).show();
+            }
         }
-        tampil.close();
+
     }
 
     @Override
@@ -161,6 +170,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pengeluaran_list_act);
         lv_wallme = (ListView)findViewById(R.id.lv_pengeluaran);
         dbControl = new dbControl(this);
+        currencyControl = new currencyControl();
         tampilSaldo();
         tampilPengeluaran();
         tampilTotal();

@@ -71,7 +71,7 @@ public class dbControl extends SQLiteOpenHelper {
 
     public Cursor pemasukanTotal() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor data = db.rawQuery("SELECT SUM(jumlah_pemasukan) from pemasukan", null);
+        Cursor data = db.rawQuery("SELECT SUM(jumlah_pemasukan) as jumlah_pemasukan from pemasukan", null);
         return data;
     }
 

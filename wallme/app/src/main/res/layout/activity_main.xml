@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Saldo Utama"
-            android:textSize="36sp"
+            android:textSize="24sp"
             android:textAlignment="center"/>
 
         <TextView
@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="0"
-            android:textSize="26sp"
+            android:textSize="18sp"
             android:textAlignment="center"/>
 
         <LinearLayout
@@ -81,6 +81,18 @@
             android:id="@+id/lv_wallme"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Data tidak ada."
+            android:layout_gravity="center"
+            android:layout_marginTop="50sp"
+            android:layout_marginBottom="50sp"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            />
 
     </LinearLayout>
 
