@@ -59,13 +59,13 @@ public class dbControl extends SQLiteOpenHelper {
 
     public Cursor pemasukanList() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor data = db.rawQuery("SELECT * FROM PEMASUKAN", null);
+        Cursor data = db.rawQuery("SELECT * FROM PEMASUKAN ORDER BY id_pemasukan DESC", null);
         return data;
     }
 
     public Cursor pengeluaranList() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor data = db.rawQuery("SELECT * FROM PENGELUARAN", null);
+        Cursor data = db.rawQuery("SELECT * FROM PENGELUARAN ORDER BY id_pengeluaran DESC", null);
         return data;
     }
 

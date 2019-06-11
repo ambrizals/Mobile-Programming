@@ -1,5 +1,6 @@
 package com.ambrizals.wallme;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -83,10 +84,11 @@ public class PengeluaranListActivity extends AppCompatActivity {
             lv_wallme.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    // Pengambilan ID dari nama pemasukan
-                    String lp = listPlr.get(position).get("nama_pemasukan");
+                    // Pengambilan ID dari nama pengeluaran
+                    String lp = listPlr.get(position).get("nama_pengeluaran");
+                    final String plr = listPlr.get(position).get("jumlah_pengeluaran");
                     final String id_plr;
-                    Pattern pattern = Pattern.compile("\\d+");
+                    Pattern pattern = Pattern.compile("(\\d+)(?!.*\\d)");
                     Matcher matcher = pattern.matcher(lp);
                     if (matcher.find()) {
                         id_plr = matcher.group(0);
@@ -109,7 +111,24 @@ public class PengeluaranListActivity extends AppCompatActivity {
                                         Toast.makeText(PengeluaranListActivity.this, "Check Ubah ID:" + id_plr, Toast.LENGTH_SHORT).show();
                                         break;
                                     case 1:
-                                        Toast.makeText(PengeluaranListActivity.this, "Check Hapus ID:" + id_plr, Toast.LENGTH_SHORT).show();
+                                        String queryDel = "DELETE FROM pengeluaran where id_pengeluaran = '"+id_plr+"'";
+                                        SQLiteDatabase db = dbControl.getWritableDatabase();
+                                        db.execSQL(queryDel);
+
+                                        String queryUpdate;
+                                        String querySaldo = "SELECT * FROM SALDO";
+                                        SQLiteDatabase konDB = dbControl.getReadableDatabase();
+                                        cursor = konDB.rawQuery(querySaldo, null);
+                                        if (cursor.moveToFirst()) {
+                                            String saldo = cursor.getString(1);
+                                            Integer saldoAkhir = Integer.valueOf(saldo) + Integer.valueOf(plr);
+                                            queryUpdate = "UPDATE saldo set jumlah_saldo = '" + saldoAkhir.toString() + "' where id_saldo = '1'";
+                                            konDB.execSQL(queryUpdate);
+                                        }
+
+                                        Toast.makeText(PengeluaranListActivity.this, "Data Pemasukan Berhasil Dihapus :" + id_plr, Toast.LENGTH_SHORT).show();
+                                        tampilPengeluaran();
+                                        tampilSaldo();
                                         break;
                                 }
                             }
@@ -169,9 +188,19 @@ public class PengeluaranListActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
+        Activity currentActivity = PengeluaranListActivity.this;
         switch (item.getItemId()){
             case 1 :
-                Toast.makeText(PengeluaranListActivity.this, "Tambah", Toast.LENGTH_SHORT).show();
+                Intent tambahPemasukan = new Intent(currentActivity, tambah_pemasukan.class);
+                startActivity(tambahPemasukan);
+                break;
+
+            case 2 :
+                Intent tambahPengeluaran = new Intent(currentActivity, tambah_pengeluaran.class);
+                startActivity(tambahPengeluaran);
+                break;
+            case 3 :
+                finish();
                 break;
         }
         return false;
