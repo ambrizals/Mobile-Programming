@@ -8,6 +8,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -27,10 +29,12 @@ public class PengeluaranListActivity extends AppCompatActivity {
     public static PengeluaranListActivity pengeluaranListAct;
     protected Cursor cursor;
     TextView tv_saldo;
+    TextView tv_total_pengeluaran;
     ListView lv_wallme;
     // Button show pemasukan dan show pengeluaran
     Button btn_shpmsk;
     Button btn_shplr;
+    Menu menu;
 
     // Tampil jumlah saldo
     void tampilSaldo() {
@@ -52,14 +56,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
         return item;
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pengeluaran_list_act);
-        lv_wallme = (ListView)findViewById(R.id.lv_pengeluaran);
-        dbControl = new dbControl(this);
-        tampilSaldo();
-
+    void tampilPengeluaran(){
         // Bagian List View
         Cursor data = dbControl.pengeluaranList();
         if(data.getCount() == 0) {
@@ -124,7 +121,30 @@ public class PengeluaranListActivity extends AppCompatActivity {
         }
 
         // End Bagian List View
+    }
+    void tampilTotal() {
+        Integer total;
+        Cursor tampil = dbControl.pengeluaranTotal();
+        tv_total_pengeluaran = (TextView)findViewById(R.id.tv_total_pengeluaran);
+        if(tampil.moveToFirst()) {
+            total = tampil.getInt(0);
+            tv_total_pengeluaran.setText(String.valueOf(total));
+        } else {
+            Toast.makeText(PengeluaranListActivity.this, "Something Wrong !", Toast.LENGTH_SHORT).show();
+        }
+        tampil.close();
+    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setTitle("Wallme - Pengeluaran");
+        setContentView(R.layout.activity_pengeluaran_list_act);
+        lv_wallme = (ListView)findViewById(R.id.lv_pengeluaran);
+        dbControl = new dbControl(this);
+        tampilSaldo();
+        tampilPengeluaran();
+        tampilTotal();
         btn_shpmsk = (Button)findViewById(R.id.btn_pemasukan);
         btn_shplr = (Button)findViewById(R.id.btn_pengeluaran);
         btn_shplr.setEnabled(false);
@@ -136,5 +156,24 @@ public class PengeluaranListActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//        return super.onCreateOptionsMenu(menu);
+        this.menu = menu;
+        menu.add(0,1,0,"Tambah Pemasukan").setIcon(android.R.drawable.btn_plus);
+        menu.add(0,2,0, "Tambah Pengeluaran").setIcon(android.R.drawable.ic_menu_rotate);
+        menu.add(0,3,0, "Exit").setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case 1 :
+                Toast.makeText(PengeluaranListActivity.this, "Tambah", Toast.LENGTH_SHORT).show();
+                break;
+        }
+        return false;
     }
 }
