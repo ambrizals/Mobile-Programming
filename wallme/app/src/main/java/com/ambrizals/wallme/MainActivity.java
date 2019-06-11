@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     TextView tv_saldo;
     TextView tv_total_pemasukan;
     ListView lv_wallme;
+    Integer total_pemasukan;
     // Button show pemasukan dan show pengeluaran
     Button btn_shpmsk;
     Button btn_shplr;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     void tampilPemasukan() {
         // Start Bagian List View
         Cursor data = dbControl.pemasukanList();
+        total_pemasukan = 0;
         if(data.getCount() == 0) {
             TextView emptyText = (TextView)findViewById(R.id.tv_empty);
             lv_wallme.setEmptyView(emptyText);
@@ -76,7 +78,8 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Something Wrong ERR:LISTDATAPMSK !", Toast.LENGTH_SHORT).show();
             } else {
                 while(dtpm.moveToNext()) {
-                    listPmsk.add(setDataPmsk(dtpm.getString(1)+ " ("+dtpm.getString(0)+ ")", dtpm.getString(2)));
+                    total_pemasukan = total_pemasukan + dtpm.getInt(2);
+                    listPmsk.add(setDataPmsk(dtpm.getString(1)+ " ("+dtpm.getString(0)+ ")", currencyControl.rupiah(Double.valueOf(dtpm.getString(2)))));
                 }
             }
             // Masukan data yang telah disimpan ke array ke listView
@@ -86,10 +89,12 @@ public class MainActivity extends AppCompatActivity {
             SimpleAdapter tampilPemasukan = new SimpleAdapter(this, listPemasukan, android.R.layout.simple_list_item_2,
                     dat, target);
             lv_wallme.setAdapter(tampilPemasukan);
+            tv_total_pemasukan = (TextView)findViewById(R.id.tv_total_pemasukan);
+            tv_total_pemasukan.setText(currencyControl.rupiah(Double.valueOf(total_pemasukan.toString())));
             lv_wallme.setSelected(true);
             lv_wallme.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                public void onItemClick(final AdapterView<?> parent, View view, int position, long id) {
                     // Pengambilan ID dari nama pemasukan
                     String lp = listPmsk.get(position).get("nama_pemasukan");
                     final String pmsk = listPmsk.get(position).get("jumlah_pemasukan");
@@ -120,25 +125,40 @@ public class MainActivity extends AppCompatActivity {
                                         startActivity(ubahPemasukan);
                                         break;
                                     case 1:
+                                        Integer pemasukanData;
+                                        SQLiteDatabase bacaData = dbControl.getReadableDatabase();
+                                        String queryItem = "SELECT * FROM pemasukan where id_pemasukan ='"+id_pmsk+"'";
+                                        cursor = bacaData.rawQuery(queryItem, null);
+                                        if (cursor.moveToFirst()) {
+                                            pemasukanData = cursor.getInt(2);
+                                        } else {
+                                            pemasukanData = 0;
+                                        }
+
                                         String queryDel = "DELETE FROM pemasukan where id_pemasukan = '"+id_pmsk+"'";
                                         SQLiteDatabase db = dbControl.getWritableDatabase();
                                         db.execSQL(queryDel);
 
                                         String queryUpdate;
                                         String querySaldo = "SELECT * FROM SALDO";
-                                        SQLiteDatabase konDB = dbControl.getReadableDatabase();
-                                        cursor = konDB.rawQuery(querySaldo, null);
+
+                                        cursor = bacaData.rawQuery(querySaldo, null);
                                         if (cursor.moveToFirst()) {
-                                            String saldo = cursor.getString(1);
-                                            Integer saldoAkhir = Integer.valueOf(saldo) - Integer.valueOf(pmsk);
-                                            queryUpdate = "UPDATE saldo set jumlah_saldo = '" + saldoAkhir.toString() + "' where id_saldo = '1'";
-                                            konDB.execSQL(queryUpdate);
+                                            if (!(pemasukanData == 0)) {
+                                                Integer saldo = cursor.getInt(1);
+                                                Integer saldoAkhir = saldo - pemasukanData;
+                                                queryUpdate = "UPDATE saldo set jumlah_saldo = '" + saldoAkhir.toString() + "' where id_saldo = '1'";
+                                                db.execSQL(queryUpdate);
+                                            } else {
+                                                Toast.makeText(MainActivity.this, "Something Wrong !", Toast.LENGTH_SHORT).show();
+                                            }
+
                                         }
 
-                                        Toast.makeText(MainActivity.this, "Data Pemasukan Berhasil Dihapus :" + id_pmsk, Toast.LENGTH_SHORT).show();
-                                        tampilPemasukan();
-                                        tampilSaldo();
-                                        break;
+                                        Toast.makeText(MainActivity.this, "Data Pemasukan Berhasil Dihapus", Toast.LENGTH_SHORT).show();
+                                        Intent refreshMain = new Intent(MainActivity.this, MainActivity.class);
+                                        startActivity(refreshMain);
+                                        finish();
                                 }
                             }
                         });
@@ -175,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
         dbControl = new dbControl(this);
         tampilSaldo();
         tampilPemasukan();
-        tampilTotal();
+//        tampilTotal();
 
 
         // End Bagian List View

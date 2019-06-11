@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
     TextView tv_saldo;
     TextView tv_total_pengeluaran;
     ListView lv_wallme;
+    Integer total_pengeluaran;
     // Button show pemasukan dan show pengeluaran
     Button btn_shpmsk;
     Button btn_shplr;
@@ -51,7 +53,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
         }
     }
 
-    // Tampil Daftar Pemasukan
+    // Tampil Daftar Pengeluaran
     private HashMap<String, String> setDataPmsk(String nama_pengeluaran, String jumlah_pengeluaran) {
         HashMap<String, String> item = new HashMap<String, String>();
         item.put("nama_pengeluaran", nama_pengeluaran);
@@ -62,6 +64,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
     void tampilPengeluaran(){
         // Bagian List View
         Cursor data = dbControl.pengeluaranList();
+        total_pengeluaran = 0;
         if(data.getCount() == 0) {
             TextView emptyText = (TextView)findViewById(R.id.tv_empty);
             lv_wallme.setEmptyView(emptyText);
@@ -73,16 +76,19 @@ public class PengeluaranListActivity extends AppCompatActivity {
                 Toast.makeText(this, "Something Wrong ERR:LISTDATAPMSK !", Toast.LENGTH_SHORT).show();
             } else {
                 while(dtpm.moveToNext()) {
-                    listPlr.add(setDataPmsk(dtpm.getString(1)+ " ("+dtpm.getString(0)+ ")", dtpm.getString(2)));
+                    total_pengeluaran = total_pengeluaran + Integer.valueOf(dtpm.getString(2));
+                    listPlr.add(setDataPmsk(dtpm.getString(1)+ " ("+dtpm.getString(0)+ ")", currencyControl.rupiah(Double.valueOf(dtpm.getString(2)))));
                 }
             }
             // Masukan data yang telah disimpan ke array ke listView
             final ArrayList<Map<String, String>> listPengeluaran = listPlr;
             String[] dat = {"nama_pengeluaran", "jumlah_pengeluaran"};
             int[] target = {android.R.id.text1, android.R.id.text2};
-            SimpleAdapter tampilPemasukan = new SimpleAdapter(this, listPengeluaran, android.R.layout.simple_list_item_2,
+            SimpleAdapter tampilPengeluaran = new SimpleAdapter(this, listPengeluaran, android.R.layout.simple_list_item_2,
                     dat, target);
-            lv_wallme.setAdapter(tampilPemasukan);
+            lv_wallme.setAdapter(tampilPengeluaran);
+            tv_total_pengeluaran = (TextView) findViewById(R.id.tv_total_pengeluaran);
+            tv_total_pengeluaran.setText(currencyControl.rupiah(Double.valueOf(total_pengeluaran.toString())));
             lv_wallme.setSelected(true);
             lv_wallme.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -103,7 +109,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
                         Toast.makeText(PengeluaranListActivity.this, "Something Wrong !", Toast.LENGTH_SHORT).show();
                         Log.d("ERROR", "INVALID_REGEX");
                     } else {
-                        //Tampil menu ubah atau hapus pada item pemasukan
+                        //Tampil menu ubah atau hapus pada item pengeluaran
                         final String[] dlg_pmsk = {"Ubah", "Hapus"};
                         AlertDialog.Builder builder = new AlertDialog.Builder(PengeluaranListActivity.this);
                         builder.setItems(dlg_pmsk, new DialogInterface.OnClickListener() {
@@ -116,24 +122,38 @@ public class PengeluaranListActivity extends AppCompatActivity {
                                         startActivity(ubahPengeluaran);
                                         break;
                                     case 1:
+                                        Integer pengeluaranData = 0;
+                                        SQLiteDatabase bacaData = dbControl.getReadableDatabase();
+                                        String queryItem = "SELECT * FROM PENGELUARAN WHERE id_pengeluaran = '"+id_plr+"'";
+                                        cursor = bacaData.rawQuery(queryItem, null);
+                                        if (cursor.moveToFirst()){
+                                            pengeluaranData = cursor.getInt(2);
+                                        }
+
                                         String queryDel = "DELETE FROM pengeluaran where id_pengeluaran = '"+id_plr+"'";
                                         SQLiteDatabase db = dbControl.getWritableDatabase();
                                         db.execSQL(queryDel);
 
+
                                         String queryUpdate;
                                         String querySaldo = "SELECT * FROM SALDO";
-                                        SQLiteDatabase konDB = dbControl.getReadableDatabase();
-                                        cursor = konDB.rawQuery(querySaldo, null);
+                                        cursor = bacaData.rawQuery(querySaldo, null);
                                         if (cursor.moveToFirst()) {
-                                            String saldo = cursor.getString(1);
-                                            Integer saldoAkhir = Integer.valueOf(saldo) + Integer.valueOf(plr);
-                                            queryUpdate = "UPDATE saldo set jumlah_saldo = '" + saldoAkhir.toString() + "' where id_saldo = '1'";
-                                            konDB.execSQL(queryUpdate);
+                                            if (!(pengeluaranData == 0)){
+                                                Integer saldoAkhir;
+                                                String saldo = cursor.getString(1);
+                                                saldoAkhir = Integer.valueOf(saldo) + pengeluaranData;
+                                                queryUpdate = "UPDATE saldo set jumlah_saldo = '" + saldoAkhir.toString() + "' where id_saldo = '1'";
+                                                db.execSQL(queryUpdate);
+                                            } else {
+                                                Toast.makeText(PengeluaranListActivity.this, "Something Wrong !", Toast.LENGTH_SHORT).show();
+                                            }
                                         }
 
-                                        Toast.makeText(PengeluaranListActivity.this, "Data Pemasukan Berhasil Dihapus :" + id_plr, Toast.LENGTH_SHORT).show();
-                                        tampilPengeluaran();
-                                        tampilSaldo();
+                                        Toast.makeText(PengeluaranListActivity.this, "Data Pengeluaran Berhasil Dihapus", Toast.LENGTH_SHORT).show();
+                                        Intent refreshPengeluaran = new Intent(PengeluaranListActivity.this, PengeluaranListActivity.class);
+                                        startActivity(refreshPengeluaran);
+                                        finish();
                                         break;
                                 }
                             }
@@ -173,7 +193,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
         currencyControl = new currencyControl();
         tampilSaldo();
         tampilPengeluaran();
-        tampilTotal();
+//        tampilTotal();
         btn_shpmsk = (Button)findViewById(R.id.btn_pemasukan);
         btn_shplr = (Button)findViewById(R.id.btn_pengeluaran);
         btn_shplr.setEnabled(false);

@@ -67,7 +67,7 @@ public class tambah_pengeluaran extends AppCompatActivity {
                     }
 
                     conDB.close();
-                    Toast.makeText(tambah_pengeluaran.this, "Pemasukan Berhasil Ditambah", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(tambah_pengeluaran.this, "Pengeluaran Berhasil Ditambah", Toast.LENGTH_SHORT).show();
                     Intent toMain = new Intent(tambah_pengeluaran.this, PengeluaranListActivity.class);
                     startActivity(toMain);
                     finish();
