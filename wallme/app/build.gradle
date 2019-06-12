@@ -1,14 +1,6 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        config {
-            storeFile file('C:\\Users\\sabun\\ambrizals.jks')
-            storePassword 'Sabunkuada5'
-            keyAlias = 'wallme.release'
-            keyPassword 'Sabunkuada5'
-        }
-    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.ambrizals.wallme"
@@ -19,10 +11,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+        debug {
         }
     }
 }

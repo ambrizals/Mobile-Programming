@@ -83,4 +83,12 @@ public class tambah_pemasukan extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed(){
+        Intent toMain = new Intent(tambah_pemasukan.this, MainActivity.class);
+        startActivity(toMain);
+        finish();
+    }
+
 }

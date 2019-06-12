@@ -90,4 +90,10 @@ public class ubah_pengeluaran extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onBackPressed(){
+        Intent toPengeluaran = new Intent(ubah_pengeluaran.this, PengeluaranListActivity.class);
+        startActivity(toPengeluaran);
+        finish();
+    }
 }

@@ -84,4 +84,10 @@ public class tambah_pengeluaran extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onBackPressed(){
+        Intent toPengeluaran =  new Intent(tambah_pengeluaran.this, PengeluaranListActivity.class);
+        startActivity(toPengeluaran);
+        finish();
+    }
 }

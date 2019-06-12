@@ -92,4 +92,10 @@ public class ubah_pemasukan extends AppCompatActivity {
 
 
     }
+    @Override
+    public void onBackPressed(){
+        Intent toMain = new Intent(ubah_pemasukan.this, MainActivity.class);
+        startActivity(toMain);
+        finish();
+    }
 }
