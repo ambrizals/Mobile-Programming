@@ -123,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                                         Intent ubahPemasukan = new Intent(MainActivity.this, ubah_pemasukan.class);
                                         ubahPemasukan.putExtra("id_pmsk", id_pmsk);
                                         startActivity(ubahPemasukan);
+                                        finish();
                                         break;
                                     case 1:
                                         Integer pemasukanData;
@@ -167,21 +168,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-    }
-
-    void tampilTotal() {
-        String total;
-        String  cur;
-        Cursor tampil = dbControl.pemasukanTotal();
-        tv_total_pemasukan = (TextView)findViewById(R.id.tv_total_pemasukan);
-        if(tampil.moveToFirst()) {
-            total = tampil.getString(0);
-            cur = currencyControl.rupiah(Double.valueOf(total));
-            tv_total_pemasukan.setText(cur);
-        } else {
-            Toast.makeText(MainActivity.this, "Something Wrong !", Toast.LENGTH_SHORT).show();
-        }
-        tampil.close();
     }
 
     @Override
@@ -230,11 +216,13 @@ public class MainActivity extends AppCompatActivity {
             case 1 :
                 Intent tambahPemasukan = new Intent(currentActivity, tambah_pemasukan.class);
                 startActivity(tambahPemasukan);
+                finish();
                 break;
 
             case 2 :
                 Intent tambahPengeluaran = new Intent(currentActivity, tambah_pengeluaran.class);
                 startActivity(tambahPengeluaran);
+                finish();
                 break;
             case 3 :
                 finish();

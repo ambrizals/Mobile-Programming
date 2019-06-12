@@ -120,6 +120,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
                                         Intent ubahPengeluaran = new Intent(PengeluaranListActivity.this, ubah_pengeluaran.class);
                                         ubahPengeluaran.putExtra("id_plr", id_plr);
                                         startActivity(ubahPengeluaran);
+                                        finish();
                                         break;
                                     case 1:
                                         Integer pengeluaranData = 0;
@@ -166,22 +167,6 @@ public class PengeluaranListActivity extends AppCompatActivity {
 
         // End Bagian List View
     }
-    void tampilTotal() {
-        Cursor tampil = dbControl.pengeluaranTotal();
-        if (!(tampil.moveToFirst()) || tampil.getCount() ==0){
-            tv_total_pengeluaran = (TextView)findViewById(R.id.tv_total_pengeluaran);
-            if(tampil.moveToFirst()) {
-                String total = tampil.getString(0);
-                if (total.equals(" ")) {
-                    String cur = currencyControl.rupiah(Double.valueOf(total));
-                    tv_total_pengeluaran.setText(cur);
-                }
-            } else {
-                Toast.makeText(PengeluaranListActivity.this, "Something Wrong !", Toast.LENGTH_SHORT).show();
-            }
-        }
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,11 +208,13 @@ public class PengeluaranListActivity extends AppCompatActivity {
             case 1 :
                 Intent tambahPemasukan = new Intent(currentActivity, tambah_pemasukan.class);
                 startActivity(tambahPemasukan);
+                finish();
                 break;
 
             case 2 :
                 Intent tambahPengeluaran = new Intent(currentActivity, tambah_pengeluaran.class);
                 startActivity(tambahPengeluaran);
+                finish();
                 break;
             case 3 :
                 finish();
