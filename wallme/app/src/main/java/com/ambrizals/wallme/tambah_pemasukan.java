@@ -23,6 +23,7 @@ public class tambah_pemasukan extends AppCompatActivity {
     Button btn_batal;
     dbControl dbControl;
     Cursor cursor;
+    Helpers helpers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,7 @@ public class tambah_pemasukan extends AppCompatActivity {
         setContentView(R.layout.activity_tambah_pemasukan);
         setTitle("Wallme - Tambah Pemasukan");
         dbControl = new dbControl(this);
+        helpers = new Helpers();
         et_nama_pemasukan = (EditText)findViewById(R.id.et_nama_pemasukan);
         et_jumlah_pemasukan = (EditText)findViewById(R.id.et_jumlah_pemasukan);
         btn_tambah_pemasukan = (Button)findViewById(R.id.btn_tambah_pemasukan);
@@ -50,45 +52,30 @@ public class tambah_pemasukan extends AppCompatActivity {
                 if ((et_nama_pemasukan.getText().toString().equals("")) || (et_jumlah_pemasukan.getText().toString().equals(""))) {
                     Toast.makeText(tambah_pemasukan.this, "Nama Pemasukan dan Jumlah Pemasukan Wajib di Isi !", Toast.LENGTH_SHORT).show();
                 } else {
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:MM:SS.SSS");
-                    Date date = new Date();
-                    String tanggalSekarang = dateFormat.format(date);
-
                     //Input data
                     String queryInsert;
                     SQLiteDatabase conDB = dbControl.getWritableDatabase();
                     queryInsert = "insert into pemasukan (nama_pemasukan, jumlah_pemasukan, created_at, updated_at)" +
                             " values ('" + et_nama_pemasukan.getText().toString() + "', '" + et_jumlah_pemasukan.getText().toString() + "" +
-                            "', '" + tanggalSekarang + "', '" + tanggalSekarang + "')";
+                            "', '" + helpers.todayDate() + "', '" + helpers.todayDate() + "')";
                     conDB.execSQL(queryInsert);
 
                     //Update saldo
-                    String queryUpdate;
                     String querySaldo = "SELECT * FROM SALDO";
                     SQLiteDatabase konDB = dbControl.getReadableDatabase();
                     cursor = konDB.rawQuery(querySaldo, null);
                     if (cursor.moveToFirst()) {
                         String saldo = cursor.getString(1);
                         Integer saldoAkhir = Integer.valueOf(saldo) + Integer.valueOf(et_jumlah_pemasukan.getText().toString());
-                        queryUpdate = "UPDATE saldo set jumlah_saldo = '" + saldoAkhir.toString() + "' where id_saldo = '1'";
-                        conDB.execSQL(queryUpdate);
+                        dbControl.updateSaldo(saldoAkhir.toString());
                     }
 
                     conDB.close();
                     Toast.makeText(tambah_pemasukan.this, "Pemasukan Berhasil Ditambah", Toast.LENGTH_SHORT).show();
-                    Intent toMain = new Intent(tambah_pemasukan.this, MainActivity.class);
-                    startActivity(toMain);
+                    MainActivity.mact.runProperty();
                     finish();
                 }
             }
         });
     }
-
-    @Override
-    public void onBackPressed(){
-        Intent toMain = new Intent(tambah_pemasukan.this, MainActivity.class);
-        startActivity(toMain);
-        finish();
-    }
-
 }

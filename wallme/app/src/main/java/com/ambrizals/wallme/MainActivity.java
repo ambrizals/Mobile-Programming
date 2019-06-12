@@ -21,8 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,18 +38,18 @@ public class MainActivity extends AppCompatActivity {
     Button btn_shpmsk;
     Button btn_shplr;
     Menu menu;
-    currencyControl currencyControl;
+    Helpers Helpers;
+    public static MainActivity mact;
 
     // Tampil jumlah saldo
     void tampilSaldo() {
-
         String querySaldo = "SELECT * FROM SALDO";
         SQLiteDatabase conDB = dbControl.getReadableDatabase();
         cursor = conDB.rawQuery(querySaldo, null);
         tv_saldo = (TextView)findViewById(R.id.tv_saldo);
         if (cursor.moveToFirst()) {
             String saldo = cursor.getString(1);
-            tv_saldo.setText(currencyControl.rupiah(Double.valueOf(saldo)));
+            tv_saldo.setText(Helpers.rupiah(Double.valueOf(saldo)));
         }
     }
 
@@ -79,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 while(dtpm.moveToNext()) {
                     total_pemasukan = total_pemasukan + dtpm.getInt(2);
-                    listPmsk.add(setDataPmsk(dtpm.getString(1)+ " ("+dtpm.getString(0)+ ")", currencyControl.rupiah(Double.valueOf(dtpm.getString(2)))));
+                    listPmsk.add(setDataPmsk(dtpm.getString(1)+ " ("+dtpm.getString(0)+ ")", Helpers.rupiah(Double.valueOf(dtpm.getString(2)))));
                 }
             }
             // Masukan data yang telah disimpan ke array ke listView
@@ -89,8 +87,7 @@ public class MainActivity extends AppCompatActivity {
             SimpleAdapter tampilPemasukan = new SimpleAdapter(this, listPemasukan, android.R.layout.simple_list_item_2,
                     dat, target);
             lv_wallme.setAdapter(tampilPemasukan);
-            tv_total_pemasukan = (TextView)findViewById(R.id.tv_total_pemasukan);
-            tv_total_pemasukan.setText(currencyControl.rupiah(Double.valueOf(total_pemasukan.toString())));
+            tv_total_pemasukan.setText(Helpers.rupiah(Double.valueOf(total_pemasukan.toString())));
             lv_wallme.setSelected(true);
             lv_wallme.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -123,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
                                         Intent ubahPemasukan = new Intent(MainActivity.this, ubah_pemasukan.class);
                                         ubahPemasukan.putExtra("id_pmsk", id_pmsk);
                                         startActivity(ubahPemasukan);
-                                        finish();
                                         break;
                                     case 1:
                                         Integer pemasukanData;
@@ -140,7 +136,6 @@ public class MainActivity extends AppCompatActivity {
                                         SQLiteDatabase db = dbControl.getWritableDatabase();
                                         db.execSQL(queryDel);
 
-                                        String queryUpdate;
                                         String querySaldo = "SELECT * FROM SALDO";
 
                                         cursor = bacaData.rawQuery(querySaldo, null);
@@ -148,8 +143,7 @@ public class MainActivity extends AppCompatActivity {
                                             if (!(pemasukanData == 0)) {
                                                 Integer saldo = cursor.getInt(1);
                                                 Integer saldoAkhir = saldo - pemasukanData;
-                                                queryUpdate = "UPDATE saldo set jumlah_saldo = '" + saldoAkhir.toString() + "' where id_saldo = '1'";
-                                                db.execSQL(queryUpdate);
+                                                dbControl.updateSaldo(saldoAkhir.toString());
                                             } else {
                                                 Toast.makeText(MainActivity.this, "Something Wrong !", Toast.LENGTH_SHORT).show();
                                             }
@@ -170,21 +164,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Menjalankan Properti yang telah disiapkan
+    void runProperty(){
+        tampilSaldo();
+        tampilPemasukan();
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setTitle("Wallme - Pemasukan");
-
+        mact = this;
+        tv_total_pemasukan = (TextView)findViewById(R.id.tv_total_pemasukan);
         lv_wallme = (ListView)findViewById(R.id.lv_wallme);
-        currencyControl = new currencyControl();
+        Helpers = new Helpers();
         dbControl = new dbControl(this);
-        tampilSaldo();
-        tampilPemasukan();
-//        tampilTotal();
-
-
-        // End Bagian List View
+        runProperty();
 
         btn_shpmsk = (Button)findViewById(R.id.btn_pemasukan);
         btn_shplr = (Button)findViewById(R.id.btn_pengeluaran);
@@ -216,13 +213,11 @@ public class MainActivity extends AppCompatActivity {
             case 1 :
                 Intent tambahPemasukan = new Intent(currentActivity, tambah_pemasukan.class);
                 startActivity(tambahPemasukan);
-                finish();
                 break;
 
             case 2 :
                 Intent tambahPengeluaran = new Intent(currentActivity, tambah_pengeluaran.class);
                 startActivity(tambahPengeluaran);
-                finish();
                 break;
             case 3 :
                 finish();

@@ -15,21 +15,26 @@ public class ubah_pengeluaran extends AppCompatActivity {
     Integer saldo, jumlah_pengeluaran;
     EditText et_nama_pengeluaran;
     EditText et_jumlah_pengeluaran;
+    EditText et_tanggal_pengeluaran;
     Button btn_ubah_pengeluaran;
     Button btn_batal;
     dbControl dbControl;
     Cursor cursor;
+    Helpers helpers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Wallme - Ubah Pengeluaran");
         setContentView(R.layout.activity_ubah_pengeluaran);
         dbControl = new dbControl(this);
+        helpers = new Helpers();
         id_pengeluaran = getIntent().getStringExtra("id_plr");
 
         // Init Variable
         et_nama_pengeluaran = (EditText)findViewById(R.id.et_ub_nama_pengeluaran);
         et_jumlah_pengeluaran = (EditText)findViewById(R.id.et_ub_jumlah_pengeluaran);
+        et_tanggal_pengeluaran = (EditText)findViewById(R.id.et_tanggal_pengeluaran);
         btn_batal = (Button)findViewById(R.id.btn_batal_4);
         btn_ubah_pengeluaran = (Button)findViewById(R.id.btn_ubah_pengeluaran);
 
@@ -51,14 +56,13 @@ public class ubah_pengeluaran extends AppCompatActivity {
             et_nama_pengeluaran.setText(cursor.getString(1));
             jumlah_pengeluaran = Integer.valueOf(cursor.getString(2));
             et_jumlah_pengeluaran.setText(cursor.getString(2));
+            et_tanggal_pengeluaran.setText(helpers.dateFormat(cursor.getString(3)));
         }
 
         // Button Action
         btn_batal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toPengeluaran = new Intent(ubah_pengeluaran.this, PengeluaranListActivity.class);
-                startActivity(toPengeluaran);
                 finish();
             }
         });
@@ -78,22 +82,20 @@ public class ubah_pengeluaran extends AppCompatActivity {
                     Integer saldoAkhir;
 
                     saldoAkhir = saldo - selisih;
-                    queryUpdate = "UPDATE saldo set jumlah_saldo = '" + saldoAkhir.toString() + "' where id_saldo = '1'";
-                    tulisData.execSQL(queryUpdate);
+                    dbControl.updateSaldo(saldoAkhir.toString());
 
                     Toast.makeText(ubah_pengeluaran.this, "Data berhasil diubah !", Toast.LENGTH_SHORT).show();
-                    Intent toPengeluaran = new Intent(ubah_pengeluaran.this, PengeluaranListActivity.class);
-                    startActivity(toPengeluaran);
+                    PengeluaranListActivity.plrAct.runProperty();
                     finish();
 
                 }
             }
         });
     }
-    @Override
-    public void onBackPressed(){
-        Intent toPengeluaran = new Intent(ubah_pengeluaran.this, PengeluaranListActivity.class);
-        startActivity(toPengeluaran);
-        finish();
-    }
+//    @Override
+//    public void onBackPressed(){
+//        Intent toPengeluaran = new Intent(ubah_pengeluaran.this, PengeluaranListActivity.class);
+//        startActivity(toPengeluaran);
+//        finish();
+//    }
 }

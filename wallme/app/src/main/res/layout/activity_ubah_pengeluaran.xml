@@ -46,6 +46,19 @@
             android:ems="10"
             android:inputType="number" />
 
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tanggal Pengeluaran" />
+
+        <EditText
+            android:id="@+id/et_tanggal_pengeluaran"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:enabled="false"
+            android:inputType="number" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -21,6 +21,7 @@ public class tambah_pengeluaran extends AppCompatActivity {
     Button btn_tambah_pengeluaran;
     Button btn_batal;
     Cursor cursor;
+    Helpers helpers;
 
 
     @Override
@@ -29,7 +30,7 @@ public class tambah_pengeluaran extends AppCompatActivity {
         setContentView(R.layout.activity_tambah_pengeluaran);
         setTitle("Wallme - Tambah Pengeluaran");
         dbControl = new dbControl(this);
-
+        helpers = new Helpers();
 
         et_nama_pengeluaran = (EditText)findViewById(R.id.et_nama_pengeluaran);
         et_jumlah_pengeluaran = (EditText)findViewById(R.id.et_jumlah_pengeluaran);
@@ -42,34 +43,27 @@ public class tambah_pengeluaran extends AppCompatActivity {
                 if ((et_nama_pengeluaran.getText().toString().equals("")) || (et_jumlah_pengeluaran.getText().toString().equals("")) ){
                     Toast.makeText(tambah_pengeluaran.this, "Nama dan Jumlah Pengeluaran Wajib di Isi !", Toast.LENGTH_SHORT).show();
                 } else {
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd HH:MM:SS.SSS");
-                    Date date = new Date();
-                    String tanggalSekarang = dateFormat.format(date);
-
                     //Input data
                     String queryInsert;
                     SQLiteDatabase conDB = dbControl.getWritableDatabase();
                     queryInsert = "insert into pengeluaran (nama_pengeluaran, jumlah_pengeluaran, created_at, updated_at)" +
                             " values ('" + et_nama_pengeluaran.getText().toString() + "', '" + et_jumlah_pengeluaran.getText().toString() + "" +
-                            "', '" + tanggalSekarang + "', '" + tanggalSekarang + "')";
+                            "', '" + helpers.todayDate() + "', '" + helpers.todayDate() + "')";
                     conDB.execSQL(queryInsert);
 
                     //Update saldo
-                    String queryUpdate;
                     String querySaldo = "SELECT * FROM SALDO";
                     SQLiteDatabase konDB = dbControl.getReadableDatabase();
                     cursor = konDB.rawQuery(querySaldo, null);
                     if (cursor.moveToFirst()) {
                         String saldo = cursor.getString(1);
                         Integer saldoAkhir = Integer.valueOf(saldo) - Integer.valueOf(et_jumlah_pengeluaran.getText().toString());
-                        queryUpdate = "UPDATE saldo set jumlah_saldo = '" + saldoAkhir.toString() + "' where id_saldo = '1'";
-                        conDB.execSQL(queryUpdate);
+                        dbControl.updateSaldo(saldoAkhir.toString());
                     }
 
                     conDB.close();
                     Toast.makeText(tambah_pengeluaran.this, "Pengeluaran Berhasil Ditambah", Toast.LENGTH_SHORT).show();
-                    Intent toMain = new Intent(tambah_pengeluaran.this, PengeluaranListActivity.class);
-                    startActivity(toMain);
+                    PengeluaranListActivity.plrAct.runProperty();
                     finish();
                 }
             }
@@ -78,16 +72,14 @@ public class tambah_pengeluaran extends AppCompatActivity {
         btn_batal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toPengeluaran =  new Intent(tambah_pengeluaran.this, PengeluaranListActivity.class);
-                startActivity(toPengeluaran);
                 finish();
             }
         });
     }
-    @Override
-    public void onBackPressed(){
-        Intent toPengeluaran =  new Intent(tambah_pengeluaran.this, PengeluaranListActivity.class);
-        startActivity(toPengeluaran);
-        finish();
-    }
+//    @Override
+//    public void onBackPressed(){
+//        Intent toPengeluaran =  new Intent(tambah_pengeluaran.this, PengeluaranListActivity.class);
+//        startActivity(toPengeluaran);
+//        finish();
+//    }
 }

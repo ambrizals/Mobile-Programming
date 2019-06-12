@@ -25,10 +25,10 @@ public class dbControl extends SQLiteOpenHelper {
         String sql_saldo = "create table saldo (id_saldo integer primary key autoincrement, jumlah_saldo integer null)";
         Log.d("Data", "onCreate" + sql_saldo);
         db.execSQL(sql_saldo);
-        String sql_pemasukan = "create table pemasukan (id_pemasukan integer primary key autoincrement, nama_pemasukan text null, jumlah_pemasukan integer null, created_at date null, updated_at datetime null)";
+        String sql_pemasukan = "create table pemasukan (id_pemasukan integer primary key autoincrement, nama_pemasukan text null, jumlah_pemasukan integer null, created_at date null, updated_at date null)";
         Log.d("Data", "onCreate" + sql_pemasukan);
         db.execSQL(sql_pemasukan);
-        String sql_pengeluaran = "create table pengeluaran (id_pengeluaran integer primary key autoincrement, nama_pengeluaran text null, jumlah_pengeluaran integer null, created_at datetime null, updated_at date null)";
+        String sql_pengeluaran = "create table pengeluaran (id_pengeluaran integer primary key autoincrement, nama_pengeluaran text null, jumlah_pengeluaran integer null, created_at date null, updated_at date null)";
         Log.d("Data", "onCreate" + sql_pengeluaran);
         db.execSQL(sql_pengeluaran);
 
@@ -59,13 +59,13 @@ public class dbControl extends SQLiteOpenHelper {
 
     public Cursor pemasukanList() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor data = db.rawQuery("SELECT * FROM PEMASUKAN ORDER BY id_pemasukan DESC", null);
+        Cursor data = db.rawQuery("SELECT * FROM PEMASUKAN ORDER BY created_at DESC", null);
         return data;
     }
 
     public Cursor pengeluaranList() {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor data = db.rawQuery("SELECT * FROM PENGELUARAN ORDER BY id_pengeluaran DESC", null);
+        Cursor data = db.rawQuery("SELECT * FROM PENGELUARAN ORDER BY created_at DESC", null);
         return data;
     }
 
@@ -79,6 +79,12 @@ public class dbControl extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor data = db.rawQuery("SELECT SUM(jumlah_pengeluaran) from pengeluaran", null);
         return data;
+    }
+
+    public void updateSaldo(String param){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE saldo set jumlah_saldo = '" + param + "' where id_saldo = '1'";
+        db.execSQL(query);
     }
 
 }

@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -28,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class PengeluaranListActivity extends AppCompatActivity {
     dbControl dbControl;
-    public static PengeluaranListActivity pengeluaranListAct;
+    public static PengeluaranListActivity plrAct;
     protected Cursor cursor;
     TextView tv_saldo;
     TextView tv_total_pengeluaran;
@@ -38,7 +37,8 @@ public class PengeluaranListActivity extends AppCompatActivity {
     Button btn_shpmsk;
     Button btn_shplr;
     Menu menu;
-    currencyControl currencyControl;
+    Helpers Helpers;
+
 
     // Tampil jumlah saldo
     void tampilSaldo() {
@@ -48,7 +48,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
         tv_saldo = (TextView)findViewById(R.id.tv_saldo);
         if (cursor.moveToFirst()) {
             String saldo = cursor.getString(1);
-            String cur = currencyControl.rupiah(Double.valueOf(saldo));
+            String cur = Helpers.rupiah(Double.valueOf(saldo));
             tv_saldo.setText(cur);
         }
     }
@@ -77,7 +77,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
             } else {
                 while(dtpm.moveToNext()) {
                     total_pengeluaran = total_pengeluaran + Integer.valueOf(dtpm.getString(2));
-                    listPlr.add(setDataPmsk(dtpm.getString(1)+ " ("+dtpm.getString(0)+ ")", currencyControl.rupiah(Double.valueOf(dtpm.getString(2)))));
+                    listPlr.add(setDataPmsk(dtpm.getString(1)+ " ("+dtpm.getString(0)+ ")", Helpers.rupiah(Double.valueOf(dtpm.getString(2)))));
                 }
             }
             // Masukan data yang telah disimpan ke array ke listView
@@ -88,7 +88,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
                     dat, target);
             lv_wallme.setAdapter(tampilPengeluaran);
             tv_total_pengeluaran = (TextView) findViewById(R.id.tv_total_pengeluaran);
-            tv_total_pengeluaran.setText(currencyControl.rupiah(Double.valueOf(total_pengeluaran.toString())));
+            tv_total_pengeluaran.setText(Helpers.rupiah(Double.valueOf(total_pengeluaran.toString())));
             lv_wallme.setSelected(true);
             lv_wallme.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -120,7 +120,6 @@ public class PengeluaranListActivity extends AppCompatActivity {
                                         Intent ubahPengeluaran = new Intent(PengeluaranListActivity.this, ubah_pengeluaran.class);
                                         ubahPengeluaran.putExtra("id_plr", id_plr);
                                         startActivity(ubahPengeluaran);
-                                        finish();
                                         break;
                                     case 1:
                                         Integer pengeluaranData = 0;
@@ -135,8 +134,6 @@ public class PengeluaranListActivity extends AppCompatActivity {
                                         SQLiteDatabase db = dbControl.getWritableDatabase();
                                         db.execSQL(queryDel);
 
-
-                                        String queryUpdate;
                                         String querySaldo = "SELECT * FROM SALDO";
                                         cursor = bacaData.rawQuery(querySaldo, null);
                                         if (cursor.moveToFirst()) {
@@ -144,8 +141,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
                                                 Integer saldoAkhir;
                                                 String saldo = cursor.getString(1);
                                                 saldoAkhir = Integer.valueOf(saldo) + pengeluaranData;
-                                                queryUpdate = "UPDATE saldo set jumlah_saldo = '" + saldoAkhir.toString() + "' where id_saldo = '1'";
-                                                db.execSQL(queryUpdate);
+                                                dbControl.updateSaldo(saldoAkhir.toString());
                                             } else {
                                                 Toast.makeText(PengeluaranListActivity.this, "Something Wrong !", Toast.LENGTH_SHORT).show();
                                             }
@@ -168,17 +164,23 @@ public class PengeluaranListActivity extends AppCompatActivity {
         // End Bagian List View
     }
 
+    // Jalankan properti yang telah disiapkan
+    void runProperty(){
+        tampilSaldo();
+        tampilPengeluaran();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("Wallme - Pengeluaran");
+        plrAct = this;
         setContentView(R.layout.activity_pengeluaran_list_act);
         lv_wallme = (ListView)findViewById(R.id.lv_pengeluaran);
         dbControl = new dbControl(this);
-        currencyControl = new currencyControl();
-        tampilSaldo();
-        tampilPengeluaran();
-//        tampilTotal();
+        Helpers = new Helpers();
+        runProperty();
+
         btn_shpmsk = (Button)findViewById(R.id.btn_pemasukan);
         btn_shplr = (Button)findViewById(R.id.btn_pengeluaran);
         btn_shplr.setEnabled(false);
@@ -208,13 +210,11 @@ public class PengeluaranListActivity extends AppCompatActivity {
             case 1 :
                 Intent tambahPemasukan = new Intent(currentActivity, tambah_pemasukan.class);
                 startActivity(tambahPemasukan);
-                finish();
                 break;
 
             case 2 :
                 Intent tambahPengeluaran = new Intent(currentActivity, tambah_pengeluaran.class);
                 startActivity(tambahPengeluaran);
-                finish();
                 break;
             case 3 :
                 finish();

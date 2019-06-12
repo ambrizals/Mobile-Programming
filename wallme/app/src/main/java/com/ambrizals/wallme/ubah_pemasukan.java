@@ -17,20 +17,26 @@ public class ubah_pemasukan extends AppCompatActivity {
     Integer jumlah_pemasukan;
     EditText et_nama_pemasukan;
     EditText et_jumlah_pemasukan;
+    EditText et_tanggal_pemasukan;
     Button btn_ubah_pemasukan;
     Button btn_batal;
     dbControl dbControl;
     Cursor cursor;
+    Helpers helpers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle("Wallme - Ubah Pemasukan");
         setContentView(R.layout.activity_ubah_pemasukan);
         dbControl = new dbControl(this);
+        helpers = new Helpers();
+
         id_pemasukan = getIntent().getStringExtra("id_pmsk");
         // Init Variable
         et_nama_pemasukan = (EditText)findViewById(R.id.et_ub_nama_pemasukan);
         et_jumlah_pemasukan = (EditText)findViewById(R.id.et_ub_jumlah_pemasukan);
+        et_tanggal_pemasukan = (EditText)findViewById(R.id.et_tanggal_pemasukan);
         btn_ubah_pemasukan = (Button)findViewById(R.id.btn_ubah_pemasukan);
         btn_batal = (Button)findViewById(R.id.btn_batal_3);
 
@@ -52,13 +58,12 @@ public class ubah_pemasukan extends AppCompatActivity {
             et_nama_pemasukan.setText(cursor.getString(1));
             jumlah_pemasukan = Integer.valueOf(cursor.getString(2));
             et_jumlah_pemasukan.setText(cursor.getString(2));
+            et_tanggal_pemasukan.setText(helpers.dateFormat(cursor.getString(3)));
         }
         //Button action
         btn_batal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent toMain = new Intent(ubah_pemasukan.this, MainActivity.class);
-                startActivity(toMain);
                 finish();
             }
         });
@@ -69,6 +74,7 @@ public class ubah_pemasukan extends AppCompatActivity {
                 if ((et_nama_pemasukan.getText().toString().equals("")) || (et_jumlah_pemasukan.getText().toString().equals(""))){
                     Toast.makeText(ubah_pemasukan.this, "Nama dan Jumlah Pemasukan tidak boleh kosong !", Toast.LENGTH_SHORT).show();
                 } else {
+
                     SQLiteDatabase tulisData = dbControl.getWritableDatabase();
                     String queryUpdate = "UPDATE pemasukan set nama_pemasukan = '"+et_nama_pemasukan.getText().toString()+"', jumlah_pemasukan ='"+et_jumlah_pemasukan.getText().toString()+"' where id_pemasukan ='"+id_pemasukan+"'";
                     tulisData.execSQL(queryUpdate);
@@ -78,24 +84,15 @@ public class ubah_pemasukan extends AppCompatActivity {
                     Integer saldoAkhir;
 
                     saldoAkhir = saldo + selisih;
-                    queryUpdate = "UPDATE saldo set jumlah_saldo = '" + saldoAkhir.toString() + "' where id_saldo = '1'";
-                    tulisData.execSQL(queryUpdate);
+                    dbControl.updateSaldo(saldoAkhir.toString());
 
                     Toast.makeText(ubah_pemasukan.this, "Data berhasil diubah !", Toast.LENGTH_SHORT).show();
-                    Intent toMain = new Intent(ubah_pemasukan.this, MainActivity.class);
-                    startActivity(toMain);
+                    MainActivity.mact.runProperty();
                     finish();
-
                 }
             }
         });
 
 
-    }
-    @Override
-    public void onBackPressed(){
-        Intent toMain = new Intent(ubah_pemasukan.this, MainActivity.class);
-        startActivity(toMain);
-        finish();
     }
 }
