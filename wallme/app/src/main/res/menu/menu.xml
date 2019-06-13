@@ -10,9 +10,4 @@
         android:title="@string/menu_pengeluaran"
         android:icon="@drawable/ic_file_upload_black_24dp"
         />
-    <item
-        android:id="@+id/menu_tambah"
-        android:title="@string/menu_tambah"
-        android:icon="@drawable/ic_add_box_black_24dp"
-        />
 </menu>

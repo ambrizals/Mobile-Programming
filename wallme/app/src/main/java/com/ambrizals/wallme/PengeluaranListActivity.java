@@ -1,6 +1,5 @@
 package com.ambrizals.wallme;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -197,29 +196,6 @@ public class PengeluaranListActivity extends AppCompatActivity {
                         finish();
                         break;
 
-
-                    case R.id.menu_tambah:
-                        final String[] tambah_menu = {"Tambah Pemasukan", "Tambah Pengeluaran", "Batal"};
-                        AlertDialog.Builder builder = new AlertDialog.Builder(PengeluaranListActivity.this);
-                        builder.setTitle("Tambah Data");
-                        builder.setItems(tambah_menu, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case 0:
-                                        Intent pengeluaran = new Intent(PengeluaranListActivity.this, tambah_pemasukan.class);
-                                        startActivity(pengeluaran);
-                                        break;
-
-                                    case 1:
-                                        Intent tambahPengeluaran = new Intent(PengeluaranListActivity.this, tambah_pengeluaran.class);
-                                        startActivity(tambahPengeluaran);
-                                        break;
-                                }
-                            }
-                        });
-                        builder.create().show();
-                        break;
                 }
                 return false;
             }
@@ -229,7 +205,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.about,menu);
+        menuInflater.inflate(R.menu.quick_tool,menu);
         return true;
     }
 
@@ -238,7 +214,16 @@ public class PengeluaranListActivity extends AppCompatActivity {
             case R.id.menu_about:
                 Intent about = new Intent(PengeluaranListActivity.this, kelompok.class);
                 startActivity(about);
-                return true;
+                break;
+            case R.id.menu_tambah_pemasukan:
+                Intent tambahPemasukan = new Intent(PengeluaranListActivity.this, tambah_pemasukan.class);
+                startActivity(tambahPemasukan);
+                break;
+
+            case R.id.menu_tambah_pengeluaran:
+                Intent tambahPengeluaran = new Intent(PengeluaranListActivity.this, tambah_pengeluaran.class);
+                startActivity(tambahPengeluaran);
+                break;
         }
         return false;
     }

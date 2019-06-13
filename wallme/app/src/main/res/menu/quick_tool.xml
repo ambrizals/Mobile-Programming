@@ -4,8 +4,14 @@
     <item
         android:id="@+id/menu_about"
         android:enabled="true"
-        android:icon="@drawable/ic_people_black_24dp"
-        android:title="Item"
+        android:icon="@drawable/ic_help_outline"
+        android:title="Tentang Aplikasi"
         android:visible="true"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/menu_tambah_pemasukan"
+        android:title="Tambah Pemasukan" />
+    <item
+        android:id="@+id/menu_tambah_pengeluaran"
+        android:title="Tambah Pengeluaran" />
 </menu>
