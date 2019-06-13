@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_pemasukan"
+        android:title="@string/menu_pemasukan"
+        android:icon="@drawable/ic_file_download_black"
+        />
+    <item
+        android:id="@+id/menu_pengeluaran"
+        android:title="@string/menu_pengeluaran"
+        android:icon="@drawable/ic_file_upload_black_24dp"
+        />
+    <item
+        android:id="@+id/menu_tambah"
+        android:title="@string/menu_tambah"
+        android:icon="@drawable/ic_add_box_black_24dp"
+        />
+</menu>

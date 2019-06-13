@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,6 +40,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
     Button btn_shplr;
     Menu menu;
     Helpers Helpers;
+    BottomNavigationView navigation;
 
 
     // Tampil jumlah saldo
@@ -45,7 +48,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
         String querySaldo = "SELECT * FROM SALDO";
         SQLiteDatabase conDB = dbControl.getReadableDatabase();
         cursor = conDB.rawQuery(querySaldo, null);
-        tv_saldo = (TextView)findViewById(R.id.tv_saldo);
+        tv_saldo = (TextView) findViewById(R.id.tv_saldo);
         if (cursor.moveToFirst()) {
             String saldo = cursor.getString(1);
             String cur = Helpers.rupiah(Double.valueOf(saldo));
@@ -61,23 +64,23 @@ public class PengeluaranListActivity extends AppCompatActivity {
         return item;
     }
 
-    void tampilPengeluaran(){
+    void tampilPengeluaran() {
         // Bagian List View
         Cursor data = dbControl.pengeluaranList();
         total_pengeluaran = 0;
-        if(data.getCount() == 0) {
-            TextView emptyText = (TextView)findViewById(R.id.tv_empty);
+        if (data.getCount() == 0) {
+            TextView emptyText = (TextView) findViewById(R.id.tv_empty);
             lv_wallme.setEmptyView(emptyText);
         } else {
             // Masukkan data dari dbms ke array
-            final ArrayList<Map<String, String>> listPlr = new ArrayList<Map<String,String>>();
+            final ArrayList<Map<String, String>> listPlr = new ArrayList<Map<String, String>>();
             Cursor dtpm = dbControl.pengeluaranList();
             if (dtpm.getCount() == 0) {
                 Toast.makeText(this, "Something Wrong ERR:LISTDATAPMSK !", Toast.LENGTH_SHORT).show();
             } else {
-                while(dtpm.moveToNext()) {
+                while (dtpm.moveToNext()) {
                     total_pengeluaran = total_pengeluaran + Integer.valueOf(dtpm.getString(2));
-                    listPlr.add(setDataPmsk(dtpm.getString(1)+ " ("+dtpm.getString(0)+ ")", Helpers.rupiah(Double.valueOf(dtpm.getString(2)))));
+                    listPlr.add(setDataPmsk(dtpm.getString(1) + " (" + dtpm.getString(0) + ")", Helpers.rupiah(Double.valueOf(dtpm.getString(2)))));
                 }
             }
             // Masukan data yang telah disimpan ke array ke listView
@@ -124,20 +127,20 @@ public class PengeluaranListActivity extends AppCompatActivity {
                                     case 1:
                                         Integer pengeluaranData = 0;
                                         SQLiteDatabase bacaData = dbControl.getReadableDatabase();
-                                        String queryItem = "SELECT * FROM PENGELUARAN WHERE id_pengeluaran = '"+id_plr+"'";
+                                        String queryItem = "SELECT * FROM PENGELUARAN WHERE id_pengeluaran = '" + id_plr + "'";
                                         cursor = bacaData.rawQuery(queryItem, null);
-                                        if (cursor.moveToFirst()){
+                                        if (cursor.moveToFirst()) {
                                             pengeluaranData = cursor.getInt(2);
                                         }
 
-                                        String queryDel = "DELETE FROM pengeluaran where id_pengeluaran = '"+id_plr+"'";
+                                        String queryDel = "DELETE FROM pengeluaran where id_pengeluaran = '" + id_plr + "'";
                                         SQLiteDatabase db = dbControl.getWritableDatabase();
                                         db.execSQL(queryDel);
 
                                         String querySaldo = "SELECT * FROM SALDO";
                                         cursor = bacaData.rawQuery(querySaldo, null);
                                         if (cursor.moveToFirst()) {
-                                            if (!(pengeluaranData == 0)){
+                                            if (!(pengeluaranData == 0)) {
                                                 Integer saldoAkhir;
                                                 String saldo = cursor.getString(1);
                                                 saldoAkhir = Integer.valueOf(saldo) + pengeluaranData;
@@ -165,7 +168,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
     }
 
     // Jalankan properti yang telah disiapkan
-    void runProperty(){
+    void runProperty() {
         tampilSaldo();
         tampilPengeluaran();
     }
@@ -176,50 +179,47 @@ public class PengeluaranListActivity extends AppCompatActivity {
         setTitle("Wallme - Pengeluaran");
         plrAct = this;
         setContentView(R.layout.activity_pengeluaran_list_act);
-        lv_wallme = (ListView)findViewById(R.id.lv_pengeluaran);
+        lv_wallme = (ListView) findViewById(R.id.lv_wallme);
         dbControl = new dbControl(this);
         Helpers = new Helpers();
         runProperty();
-
-        btn_shpmsk = (Button)findViewById(R.id.btn_pemasukan);
-        btn_shplr = (Button)findViewById(R.id.btn_pengeluaran);
-        btn_shplr.setEnabled(false);
-        btn_shpmsk.setOnClickListener(new View.OnClickListener() {
+        navigation = (BottomNavigationView) findViewById(R.id.menu_bottom);
+        navigation.setSelectedItemId(R.id.menu_pengeluaran);
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onClick(View v) {
-                Intent toMain = new Intent(PengeluaranListActivity.this, MainActivity.class);
-                startActivity(toMain);
-                finish();
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.menu_pemasukan:
+                        Intent tambahPemasukan = new Intent(PengeluaranListActivity.this, MainActivity.class);
+                        startActivity(tambahPemasukan);
+                        finish();
+                        break;
+
+                    case R.id.menu_tambah:
+                        final String[] tambah_menu = {"Tambah Pemasukan", "Tambah Pengeluaran", "Batal"};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(PengeluaranListActivity.this);
+                        builder.setTitle("Tambah Data");
+                        builder.setItems(tambah_menu, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0:
+                                        Intent pengeluaran = new Intent(PengeluaranListActivity.this, tambah_pemasukan.class);
+                                        startActivity(pengeluaran);
+                                        break;
+
+                                    case 1:
+                                        Intent tambahPengeluaran = new Intent(PengeluaranListActivity.this, tambah_pengeluaran.class);
+                                        startActivity(tambahPengeluaran);
+                                        break;
+                                }
+                            }
+                        });
+                        builder.create().show();
+                        break;
+                }
+                return false;
             }
         });
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-//        return super.onCreateOptionsMenu(menu);
-        this.menu = menu;
-        menu.add(0,1,0,"Tambah Pemasukan").setIcon(android.R.drawable.btn_plus);
-        menu.add(0,2,0, "Tambah Pengeluaran").setIcon(android.R.drawable.ic_menu_rotate);
-        menu.add(0,3,0, "Exit").setIcon(android.R.drawable.ic_menu_close_clear_cancel);
-
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item){
-        Activity currentActivity = PengeluaranListActivity.this;
-        switch (item.getItemId()){
-            case 1 :
-                Intent tambahPemasukan = new Intent(currentActivity, tambah_pemasukan.class);
-                startActivity(tambahPemasukan);
-                break;
-
-            case 2 :
-                Intent tambahPengeluaran = new Intent(currentActivity, tambah_pengeluaran.class);
-                startActivity(tambahPengeluaran);
-                break;
-            case 3 :
-                finish();
-                break;
-        }
-        return false;
     }
 }

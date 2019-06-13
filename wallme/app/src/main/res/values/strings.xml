@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">wallme</string>
+
+    <string name="menu_pemasukan">Pemasukan</string>
+    <string name="menu_pengeluaran">Pengeluaran</string>
+    <string name="menu_tambah">Tambah</string>
 </resources>
