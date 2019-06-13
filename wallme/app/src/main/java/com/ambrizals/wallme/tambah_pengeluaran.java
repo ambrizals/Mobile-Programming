@@ -43,6 +43,7 @@ public class tambah_pengeluaran extends AppCompatActivity {
                 if ((et_nama_pengeluaran.getText().toString().equals("")) || (et_jumlah_pengeluaran.getText().toString().equals("")) ){
                     Toast.makeText(tambah_pengeluaran.this, "Nama dan Jumlah Pengeluaran Wajib di Isi !", Toast.LENGTH_SHORT).show();
                 } else {
+
                     //Input data
                     String queryInsert;
                     SQLiteDatabase conDB = dbControl.getWritableDatabase();
@@ -60,8 +61,9 @@ public class tambah_pengeluaran extends AppCompatActivity {
                         Integer saldoAkhir = Integer.valueOf(saldo) - Integer.valueOf(et_jumlah_pengeluaran.getText().toString());
                         dbControl.updateSaldo(saldoAkhir.toString());
                     }
-
                     conDB.close();
+
+
                     Toast.makeText(tambah_pengeluaran.this, "Pengeluaran Berhasil Ditambah", Toast.LENGTH_SHORT).show();
                     PengeluaranListActivity.plrAct.runProperty();
                     finish();

@@ -12,6 +12,8 @@ import java.util.Date;
 public class dbControl extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "wallme.db";
     public static final int DATABASE_VERSION = 1;
+    Helpers Helpers = new Helpers();
+    Cursor cursor;
 
     public dbControl(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -87,4 +89,45 @@ public class dbControl extends SQLiteOpenHelper {
         db.execSQL(query);
     }
 
+    public void insertPemasukan(String nama, String pemasukan) {
+        //Input data
+        String queryInsert;
+        SQLiteDatabase conDB = this.getWritableDatabase();
+        queryInsert = "insert into pemasukan (nama_pemasukan, jumlah_pemasukan, created_at, updated_at)" +
+                " values ('" + nama + "', '" + pemasukan + "" +
+                "', '" + Helpers.todayDate() + "', '" + Helpers.todayDate() + "')";
+        conDB.execSQL(queryInsert);
+
+        //Update saldo
+        String querySaldo = "SELECT * FROM SALDO";
+        SQLiteDatabase konDB = this.getReadableDatabase();
+        cursor = konDB.rawQuery(querySaldo, null);
+        if (cursor.moveToFirst()) {
+            String saldo = cursor.getString(1);
+            Integer saldoAkhir = Integer.valueOf(saldo) + Integer.valueOf(pemasukan);
+            this.updateSaldo(saldoAkhir.toString());
+        }
+        conDB.close();
+    }
+
+    public void insertPengeluaran(String nama, String pengeluaran){
+        //Input data
+        String queryInsert;
+        SQLiteDatabase conDB = this.getWritableDatabase();
+        queryInsert = "insert into pengeluaran (nama_pengeluaran, jumlah_pengeluaran, created_at, updated_at)" +
+                " values ('" + nama + "', '" + pengeluaran + "" +
+                "', '" + Helpers.todayDate() + "', '" + Helpers.todayDate() + "')";
+        conDB.execSQL(queryInsert);
+
+        //Update saldo
+        String querySaldo = "SELECT * FROM SALDO";
+        SQLiteDatabase konDB = this.getReadableDatabase();
+        cursor = konDB.rawQuery(querySaldo, null);
+        if (cursor.moveToFirst()) {
+            String saldo = cursor.getString(1);
+            Integer saldoAkhir = Integer.valueOf(saldo) - Integer.valueOf(pengeluaran);
+            this.updateSaldo(saldoAkhir.toString());
+        }
+        conDB.close();
+    }
 }
