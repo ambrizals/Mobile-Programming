@@ -1,5 +1,6 @@
 package com.ambrizals.wallme;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,12 +11,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
@@ -41,6 +44,11 @@ public class PengeluaranListActivity extends AppCompatActivity {
     Menu menu;
     Helpers Helpers;
     BottomNavigationView navigation;
+    AlertDialog.Builder dialog;
+    LayoutInflater inflater;
+    View dialogView;
+    EditText nama_pemasukan, jumlah_pemasukan, nama_pengeluaran, jumlah_pengeluaran;
+    Activity currentActivity = PengeluaranListActivity.this;
 
 
     // Tampil jumlah saldo
@@ -109,19 +117,19 @@ public class PengeluaranListActivity extends AppCompatActivity {
                     }
 
                     if (id_plr == "INVALID") {
-                        Toast.makeText(PengeluaranListActivity.this, "Something Wrong !", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(currentActivity, "Something Wrong !", Toast.LENGTH_SHORT).show();
                         Log.d("ERROR", "INVALID_REGEX");
                     } else {
                         //Tampil menu ubah atau hapus pada item pengeluaran
                         final String[] dlg_pmsk = {"Ubah", "Hapus"};
-                        AlertDialog.Builder builder = new AlertDialog.Builder(PengeluaranListActivity.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity);
                         builder.setTitle("Aksi Pengeluaran");
                         builder.setItems(dlg_pmsk, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which) {
                                     case 0:
-                                        Intent ubahPengeluaran = new Intent(PengeluaranListActivity.this, ubah_pengeluaran.class);
+                                        Intent ubahPengeluaran = new Intent(currentActivity, ubah_pengeluaran.class);
                                         ubahPengeluaran.putExtra("id_plr", id_plr);
                                         startActivity(ubahPengeluaran);
                                         break;
@@ -147,12 +155,12 @@ public class PengeluaranListActivity extends AppCompatActivity {
                                                 saldoAkhir = Integer.valueOf(saldo) + pengeluaranData;
                                                 dbControl.updateSaldo(saldoAkhir.toString());
                                             } else {
-                                                Toast.makeText(PengeluaranListActivity.this, "Something Wrong !", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(currentActivity, "Something Wrong !", Toast.LENGTH_SHORT).show();
                                             }
                                         }
 
                                         Toast.makeText(PengeluaranListActivity.this, "Data Pengeluaran Berhasil Dihapus", Toast.LENGTH_SHORT).show();
-                                        Intent refreshPengeluaran = new Intent(PengeluaranListActivity.this, PengeluaranListActivity.class);
+                                        Intent refreshPengeluaran = new Intent(currentActivity, PengeluaranListActivity.class);
                                         startActivity(refreshPengeluaran);
                                         finish();
                                         break;
@@ -191,7 +199,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_pemasukan:
-                        Intent tambahPemasukan = new Intent(PengeluaranListActivity.this, MainActivity.class);
+                        Intent tambahPemasukan = new Intent(currentActivity, MainActivity.class);
                         startActivity(tambahPemasukan);
                         finish();
                         break;
@@ -212,17 +220,82 @@ public class PengeluaranListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
             case R.id.menu_about:
-                Intent about = new Intent(PengeluaranListActivity.this, kelompok.class);
+                Intent about = new Intent(currentActivity, kelompok.class);
                 startActivity(about);
                 break;
             case R.id.menu_tambah_pemasukan:
-                Intent tambahPemasukan = new Intent(PengeluaranListActivity.this, tambah_pemasukan.class);
-                startActivity(tambahPemasukan);
+                dialog = new AlertDialog.Builder(currentActivity);
+                inflater = getLayoutInflater();
+                dialogView = inflater.inflate(R.layout.form_tambah_pemasukan, null);
+                dialog.setView(dialogView);
+                dialog.setCancelable(true);
+                dialog.setIcon(R.drawable.ic_add_circle_black);
+                dialog.setTitle("Tambah Pemasukan");
+                nama_pemasukan = (EditText)dialogView.findViewById(R.id.et_tambah_nama_pemasukan);
+                jumlah_pemasukan = (EditText)dialogView.findViewById(R.id.et_tambah_jumlah_pemasukan);
+
+                nama_pemasukan.setText(null);
+                jumlah_pemasukan.setText(null);
+
+                dialog.setPositiveButton("Tambah Pemasukan", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if ((nama_pemasukan.getText().toString().equals("")) || (jumlah_pemasukan.getText().toString().equals(""))) {
+                            Toast.makeText(currentActivity, "Nama Pemasukan dan Jumlah Pemasukan Wajib di Isi !", Toast.LENGTH_SHORT).show();
+                        } else {
+                            dbControl.insertPemasukan(nama_pemasukan.getText().toString(), jumlah_pemasukan.getText().toString());
+                            Toast.makeText(currentActivity, "Pemasukan Berhasil Ditambah", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            Intent pemasukan = new Intent(currentActivity, MainActivity.class);
+                            startActivity(pemasukan);
+                            finish();
+                        }
+                    }
+                });
+                dialog.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
                 break;
 
             case R.id.menu_tambah_pengeluaran:
-                Intent tambahPengeluaran = new Intent(PengeluaranListActivity.this, tambah_pengeluaran.class);
-                startActivity(tambahPengeluaran);
+                dialog = new AlertDialog.Builder(currentActivity);
+                inflater = getLayoutInflater();
+                dialogView = inflater.inflate(R.layout.form_tambah_pengeluaran, null);
+                dialog.setView(dialogView);
+                dialog.setCancelable(true);
+                dialog.setTitle("Tambah Pengeluaran");
+
+                nama_pengeluaran = (EditText)dialogView.findViewById(R.id.et_tambah_nama_pengeluaran);
+                jumlah_pengeluaran = (EditText)dialogView.findViewById(R.id.et_tambah_jumlah_pengeluaran);
+
+                nama_pengeluaran.setText(null);
+                jumlah_pengeluaran.setText(null);
+
+                dialog.setPositiveButton("Tambah Pengeluaran", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if ((nama_pengeluaran.getText().toString().equals("")) || (jumlah_pengeluaran.getText().toString().equals("")) ){
+                            Toast.makeText(currentActivity, "Nama dan Jumlah Pengeluaran Wajib di Isi !", Toast.LENGTH_SHORT).show();
+                        } else {
+                            dbControl.insertPengeluaran(nama_pengeluaran.getText().toString(), jumlah_pengeluaran.getText().toString());
+                            Toast.makeText(currentActivity, "Pengeluaran Berhasil Ditambah", Toast.LENGTH_SHORT).show();
+                            Intent pengeluaran = new Intent(currentActivity, PengeluaranListActivity.class);
+                            startActivity(pengeluaran);
+                            finish();
+                        }
+                    }
+                });
+                dialog.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
                 break;
         }
         return false;

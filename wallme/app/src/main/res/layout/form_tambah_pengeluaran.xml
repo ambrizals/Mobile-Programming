@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/form_tambah_pemasukan"
+    android:id="@+id/form_tambah_pengeluaran"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
+
 
     <LinearLayout
         android:id="@+id/body"
@@ -14,33 +14,32 @@
         android:layout_margin="12sp">
 
         <TextView
-            android:id="@+id/textView21"
+            android:id="@+id/textView19"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nama Pemasukan" />
+            android:text="Nama Pengeluaran" />
 
         <EditText
-            android:id="@+id/et_tambah_nama_pemasukan"
+            android:id="@+id/et_tambah_nama_pengeluaran"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:drawable/editbox_background_normal"
-            android:hint="Nama Pemasukan" />
+            android:ems="10"
+            android:inputType="textPersonName" />
 
         <TextView
-            android:id="@+id/textView22"
+            android:id="@+id/textView20"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Jumlah Pemasukan" />
+            android:text="Jumlah Pengeluaran"
+            android:inputType="number"/>
 
         <EditText
-            android:id="@+id/et_tambah_jumlah_pemasukan"
+            android:id="@+id/et_tambah_jumlah_pengeluaran"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:drawable/editbox_background_normal"
-            android:hint="Jumlah Pemasukan"
-            android:inputType="number" />
+            android:ems="10"
+            android:inputType="textPersonName" />
 
     </LinearLayout>
-
 
 </LinearLayout>
