@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ubah_pengeluaran"></activity>
+        <activity android:name=".kelompok"></activity>
+        <activity android:name=".ubah_pengeluaran" />
         <activity android:name=".ubah_pemasukan" />
         <activity android:name=".tambah_pengeluaran" />
         <activity android:name=".tambah_pemasukan" />

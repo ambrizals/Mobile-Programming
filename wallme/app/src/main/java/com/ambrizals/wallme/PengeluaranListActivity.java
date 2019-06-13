@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -115,6 +116,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
                         //Tampil menu ubah atau hapus pada item pengeluaran
                         final String[] dlg_pmsk = {"Ubah", "Hapus"};
                         AlertDialog.Builder builder = new AlertDialog.Builder(PengeluaranListActivity.this);
+                        builder.setTitle("Aksi Pengeluaran");
                         builder.setItems(dlg_pmsk, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -195,6 +197,7 @@ public class PengeluaranListActivity extends AppCompatActivity {
                         finish();
                         break;
 
+
                     case R.id.menu_tambah:
                         final String[] tambah_menu = {"Tambah Pemasukan", "Tambah Pengeluaran", "Batal"};
                         AlertDialog.Builder builder = new AlertDialog.Builder(PengeluaranListActivity.this);
@@ -221,5 +224,22 @@ public class PengeluaranListActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.about,menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.menu_about:
+                Intent about = new Intent(PengeluaranListActivity.this, kelompok.class);
+                startActivity(about);
+                return true;
+        }
+        return false;
     }
 }

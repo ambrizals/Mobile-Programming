@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -195,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.menu_pengeluaran:
-                        Intent actPengeluaranList = new Intent(getApplicationContext(), PengeluaranListActivity.class);
+                        Intent actPengeluaranList = new Intent(MainActivity.this, PengeluaranListActivity.class);
                         startActivity(actPengeluaranList);
                         finish();
                         break;
@@ -226,5 +227,22 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.about,menu);
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.menu_about:
+                Intent about = new Intent(MainActivity.this, kelompok.class);
+                startActivity(about);
+                return true;
+        }
+        return false;
     }
 }

@@ -1,7 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    signingConfigs {
+release {
+storeFile file('C:\\Users\\lenovo\\wallme.jks')
+storePassword 'Sabunkuada5'
+keyAlias = 'wallme.release'
+keyPassword 'Sabunkuada5'}
+}
+compileSdkVersion 28
     defaultConfig {
         applicationId "com.ambrizals.wallme"
         minSdkVersion 22
@@ -9,6 +16,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
     }
     buildTypes {
         debug {

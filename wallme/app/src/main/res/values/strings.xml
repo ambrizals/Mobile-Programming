@@ -4,4 +4,7 @@
     <string name="menu_pemasukan">Pemasukan</string>
     <string name="menu_pengeluaran">Pengeluaran</string>
     <string name="menu_tambah">Tambah</string>
+    <string name="about_application">
+        Wallme (Wallet Management) merupakan aplikasi yang digunakan untuk membantu dalam melakukan manajemen keuangan, salah satu fitur yang terdapat pada aplikasi ini yaitu pencatatan pengeluaran dan pemasukan. Dengan menggunakan aplikasi ini diharapkan dapat membantu pengguna untuk melihat seberapa besar pengeluaran atau pemasukan yang didapat, sehingga pengguna dapat melakukan perkiraan dana yang yang harus dikeluarkan atau diterima.
+    </string>
 </resources>
