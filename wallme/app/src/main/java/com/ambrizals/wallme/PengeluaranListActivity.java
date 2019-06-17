@@ -134,35 +134,52 @@ public class PengeluaranListActivity extends AppCompatActivity {
                                         startActivity(ubahPengeluaran);
                                         break;
                                     case 1:
-                                        Integer pengeluaranData = 0;
-                                        SQLiteDatabase bacaData = dbControl.getReadableDatabase();
-                                        String queryItem = "SELECT * FROM PENGELUARAN WHERE id_pengeluaran = '" + id_plr + "'";
-                                        cursor = bacaData.rawQuery(queryItem, null);
-                                        if (cursor.moveToFirst()) {
-                                            pengeluaranData = cursor.getInt(2);
-                                        }
+                                        AlertDialog.Builder alert = new AlertDialog.Builder(currentActivity);
+                                        alert.setTitle("Hapus data ?");
+                                        alert.setMessage("Ingin menghapus data pengeluaran ?");
+                                        alert.setPositiveButton("Hapus", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
 
-                                        String queryDel = "DELETE FROM pengeluaran where id_pengeluaran = '" + id_plr + "'";
-                                        SQLiteDatabase db = dbControl.getWritableDatabase();
-                                        db.execSQL(queryDel);
+                                                Integer pengeluaranData = 0;
+                                                SQLiteDatabase bacaData = dbControl.getReadableDatabase();
+                                                String queryItem = "SELECT * FROM PENGELUARAN WHERE id_pengeluaran = '" + id_plr + "'";
+                                                cursor = bacaData.rawQuery(queryItem, null);
+                                                if (cursor.moveToFirst()) {
+                                                    pengeluaranData = cursor.getInt(2);
+                                                }
 
-                                        String querySaldo = "SELECT * FROM SALDO";
-                                        cursor = bacaData.rawQuery(querySaldo, null);
-                                        if (cursor.moveToFirst()) {
-                                            if (!(pengeluaranData == 0)) {
-                                                Integer saldoAkhir;
-                                                String saldo = cursor.getString(1);
-                                                saldoAkhir = Integer.valueOf(saldo) + pengeluaranData;
-                                                dbControl.updateSaldo(saldoAkhir.toString());
-                                            } else {
-                                                Toast.makeText(currentActivity, "Something Wrong !", Toast.LENGTH_SHORT).show();
+                                                String queryDel = "DELETE FROM pengeluaran where id_pengeluaran = '" + id_plr + "'";
+                                                SQLiteDatabase db = dbControl.getWritableDatabase();
+                                                db.execSQL(queryDel);
+
+                                                String querySaldo = "SELECT * FROM SALDO";
+                                                cursor = bacaData.rawQuery(querySaldo, null);
+                                                if (cursor.moveToFirst()) {
+                                                    if (!(pengeluaranData == 0)) {
+                                                        Integer saldoAkhir;
+                                                        String saldo = cursor.getString(1);
+                                                        saldoAkhir = Integer.valueOf(saldo) + pengeluaranData;
+                                                        dbControl.updateSaldo(saldoAkhir.toString());
+                                                    } else {
+                                                        Toast.makeText(currentActivity, "Something Wrong !", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                }
+                                                dialog.dismiss();
+                                                Toast.makeText(PengeluaranListActivity.this, "Data Pengeluaran Berhasil Dihapus", Toast.LENGTH_SHORT).show();
+                                                Intent refreshPengeluaran = new Intent(currentActivity, PengeluaranListActivity.class);
+                                                startActivity(refreshPengeluaran);
+                                                finish();
                                             }
-                                        }
+                                        });
 
-                                        Toast.makeText(PengeluaranListActivity.this, "Data Pengeluaran Berhasil Dihapus", Toast.LENGTH_SHORT).show();
-                                        Intent refreshPengeluaran = new Intent(currentActivity, PengeluaranListActivity.class);
-                                        startActivity(refreshPengeluaran);
-                                        finish();
+                                        alert.setNegativeButton("Batal", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                        alert.create().show();
                                         break;
                                 }
                             }
